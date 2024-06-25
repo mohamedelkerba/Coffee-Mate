@@ -51,7 +51,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   height: 24,
                 ),
                 DefaultText(
-                  text: 'Hello! Register to get started',
+                  text: 'Hello! Register to get   started',
                   fontSize: 24,
                   fontColor: Colors.black,
                   fontWeight: FontWeight.bold,
@@ -198,18 +198,20 @@ class _RegisterPageState extends State<RegisterPage> {
                         String errorMessage;
                         if (e.code == 'weak-password') {
                           errorMessage = 'The password provided is too weak.';
-                        } else if (e.code == 'email-already-in-use') {
+                        }
+                        else if (e.code == 'email-already-in-use') {
                           errorMessage = 'The account already exists for that email.';
-                        } else {
+                        }
+                        else {
                           errorMessage = 'An error occurred. Please try again.';
                         }
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(errorMessage)),
-                        );
+                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              backgroundColor: focusColor,
+                              content: Text(errorMessage)),);
                       } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                         const  SnackBar(content: Text('An error occurred. Please try again.')),
-                        );
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                             backgroundColor: focusColor,
+                             content: Text('An error occurred. Please try again.')),);
                       }
                     }
                   },

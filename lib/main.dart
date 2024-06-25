@@ -26,13 +26,11 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
-    FirebaseAuth.instance
-        .authStateChanges()
-        .listen((User? user) {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
-        print('-------------------------------------------->User is currently signed out!');
+        print('--------->User is currently signed out!');
       } else {
-        print('-------------------------------------------->User is signed in!');
+        print('--------->User is signed in!');
       }
     });
   }
@@ -45,7 +43,8 @@ class _MyAppState extends State<MyApp> {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home:  MainPage(),
+      home:  FirebaseAuth.instance.currentUser == null ? MainPage() : const HomePage(),
+
       routes: {
         'register' : (context)=> const RegisterPage(),
         'login': (context) => const LoginPage(),
