@@ -65,9 +65,8 @@ class _MainPageState extends State<MainPage> {
                 cursor: SystemMouseCursors.click,
                 child: GestureDetector(
                   onTap: ()async {
-                    // userCredential = await FirebaseAuth.instance.signInAnonymously();
-                    // print(userCredential?.user?.uid);
-
+                    userCredential = await FirebaseAuth.instance.signInAnonymously();
+                     Navigator.of(context).pushNamedAndRemoveUntil('homepage', (route) => false);
                   },
                   child: DefaultText(
                    text:   'Continue as a guest',

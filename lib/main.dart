@@ -7,11 +7,9 @@ import 'package:myproject/auth/register.dart';
 import 'package:myproject/firebase_options.dart';
 import 'package:myproject/homePage.dart';
 
-Future main()async {
+Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
@@ -21,7 +19,6 @@ class MyApp extends StatefulWidget {
   @override
   State<MyApp> createState() => _MyAppState();
 }
-
 
 class _MyAppState extends State<MyApp> {
   @override
@@ -34,6 +31,7 @@ class _MyAppState extends State<MyApp> {
       }
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -43,15 +41,15 @@ class _MyAppState extends State<MyApp> {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home:  FirebaseAuth.instance.currentUser == null ? MainPage() : const HomePage(),
-
+      home: (FirebaseAuth.instance.currentUser != null &&
+              FirebaseAuth.instance.currentUser!.emailVerified)
+          ? const HomePage()
+          : MainPage(),
       routes: {
-        'register' : (context)=> const RegisterPage(),
+        'register': (context) => const RegisterPage(),
         'login': (context) => const LoginPage(),
-        'homepage' : (context) => const HomePage(),
+        'homepage': (context) => const HomePage(),
       },
     );
   }
 }
-
-

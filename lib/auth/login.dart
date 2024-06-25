@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -145,8 +146,18 @@ class _LoginPageState extends State<LoginPage> {
                               email: email.text,
                               password: password.text,
                             );
-                            Navigator.of(context)
-                                .pushReplacementNamed('homepage');
+                            if(credential.user!.emailVerified){
+                              Navigator.of(context).pushReplacementNamed('homepage');
+                            }
+                            else{
+                                AwesomeDialog(
+                                    context:context,
+                                  dialogType: DialogType.error,
+                                  animType: AnimType.rightSlide,
+                                  title: 'Error',
+                                  desc: 'please , go to email and click the link to verify your account ! '
+                                );
+                            }
                           } on FirebaseAuthException catch (e) {
                             String errorMessage;
                             if (e.code == 'user-not-found') {
