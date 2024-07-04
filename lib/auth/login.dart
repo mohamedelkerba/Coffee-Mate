@@ -3,11 +3,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:myproject/auth/MainPage.dart';
 import 'package:myproject/constants.dart';
 import 'package:myproject/core/colors.dart';
 import 'package:myproject/core/widgets/customButton.dart';
 import 'package:myproject/core/widgets/customTextField.dart';
 import 'package:myproject/core/widgets/defaultText.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -22,10 +24,49 @@ class _LoginPageState extends State<LoginPage> {
 
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
+  Future signInWithGoogle() async {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
-  @override
-  void initState() {
-    super.initState();
+    if (googleUser == null) {
+      print('Google sign-in aborted');
+      return;
+    }
+
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser.authentication;
+
+    print('Access Token: ${googleAuth?.accessToken}');
+    print('ID Token: ${googleAuth?.idToken}');
+
+    if (googleAuth?.accessToken == null || googleAuth?.idToken == null) {
+      print('Failed to retrieve tokens');
+      return;
+    }
+
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    try {
+      await FirebaseAuth.instance.signInWithCredential(credential);
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil('homepage', (route) => false);
+    } on FirebaseAuthException catch (e) {
+      print('FirebaseAuthException: ${e.message}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            backgroundColor: focusColor,
+            content: Text(e.message ?? 'An error occurred')),
+      );
+    } catch (e) {
+      print('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            backgroundColor: focusColor,
+            content: Text('An error occurred. Please try again.')),
+      );
+    }
   }
 
   @override
@@ -41,7 +82,10 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               GestureDetector(
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => MainPage()),
+                  );
                 },
                 child: SvgPicture.asset(
                   'assets/images/Chevron.svg',
@@ -53,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
               DefaultText(
                 text: 'Welcome back! Glad to see you, Again!',
                 fontSize: 24,
-                fontColor: Colors.black,
+                fontColor: const Color(0xffd26001),
                 fontWeight: FontWeight.bold,
               ),
               const SizedBox(
@@ -92,7 +136,9 @@ class _LoginPageState extends State<LoginPage> {
                       radius: 10,
                       controller: password,
                       validator: (value) {
-                        if (value == null || value.isEmpty || value.length < 8) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            value.length < 8) {
                           return 'Password must be at least 8 characters long';
                         }
                         return null;
@@ -146,45 +192,41 @@ class _LoginPageState extends State<LoginPage> {
                               email: email.text,
                               password: password.text,
                             );
-                            if(credential.user!.emailVerified){
-                              Navigator.of(context).pushReplacementNamed('homepage');
-                            }
-                            else{
-                                AwesomeDialog(
-                                    context:context,
+                            if (credential.user!.emailVerified) {
+                              Navigator.of(context)
+                                  .pushReplacementNamed('homepage');
+                            } else {
+                              AwesomeDialog(
+                                  context: context,
                                   dialogType: DialogType.error,
                                   animType: AnimType.rightSlide,
                                   title: 'Error',
-                                  desc: 'please , go to email and click the link to verify your account ! '
-                                );
+                                  desc:
+                                      'please , go to email and click the link to verify your account ! ');
                             }
                           } on FirebaseAuthException catch (e) {
                             String errorMessage;
                             if (e.code == 'user-not-found') {
+                              errorMessage = 'No user found for that email.';
+                            } else if (e.code == 'wrong-password') {
+                              errorMessage = 'Wrong password provided.';
+                            } else {
                               errorMessage =
-                              'No user found for that email.';
-                            }
-                            else if (e.code == 'wrong-password') {
-                              errorMessage =
-                              'Wrong password provided.';
-                            }
-                            else {
-                              errorMessage =
-                              'An error occurred. Please try again.';
+                                  'An error occurred. Please try again.';
                             }
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 backgroundColor: focusColor,
-                                content: Text(errorMessage)));}
-                          catch (e) {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(
-                                backgroundColor: focusColor,
-                                content: Text(
-                                    'An error occurred. Please try again.')));
+                                content: Text(errorMessage)));
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    backgroundColor: focusColor,
+                                    content: Text(
+                                        'An error occurred. Please try again.')));
                           }
                         }
                       },
-                      borderColor: const Color(0xff182A3C),
+                      borderColor: const Color(0xffd26001).withOpacity(0.8),
                     ),
                     const SizedBox(
                       height: 32,
@@ -234,7 +276,9 @@ class _LoginPageState extends State<LoginPage> {
                                       'assets/images/Vector.svg'))),
                         ),
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            signInWithGoogle();
+                          },
                           child: Container(
                               width: 120,
                               height: 48,
@@ -249,8 +293,8 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                     ),
                     Padding(
-                      padding:
-                      const EdgeInsets.symmetric(horizontal: 60.0, vertical: 24),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 60.0, vertical: 24),
                       child: GestureDetector(
                         onTap: () {},
                         child: RichText(

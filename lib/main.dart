@@ -23,6 +23,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
+    super.initState();
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
         print('--------->User is currently signed out!');
@@ -42,13 +43,13 @@ class _MyAppState extends State<MyApp> {
         useMaterial3: true,
       ),
       home: (FirebaseAuth.instance.currentUser != null &&
-              FirebaseAuth.instance.currentUser!.emailVerified)
-          ? const HomePage()
+          FirebaseAuth.instance.currentUser!.emailVerified)
+          ?   const HomePage()
           : MainPage(),
       routes: {
         'register': (context) => const RegisterPage(),
         'login': (context) => const LoginPage(),
-        'homepage': (context) => const HomePage(),
+        'homepage': (context) =>  const HomePage()
       },
     );
   }

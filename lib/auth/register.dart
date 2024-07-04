@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +54,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 DefaultText(
                   text: 'Hello! Register to get   started',
                   fontSize: 24,
-                  fontColor: Colors.black,
+                  fontColor:const Color(0xffd26001),
                   fontWeight: FontWeight.bold,
                 ),
                 const SizedBox(
@@ -193,7 +194,12 @@ class _RegisterPageState extends State<RegisterPage> {
                           email: email.text,
                           password: password.text,
                         );
+                        await credential.user!.sendEmailVerification();
+
                         Navigator.of(context).pushReplacementNamed('login');
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            backgroundColor: focusColor,
+                            content: Text('Your account created successfully you can login now')),);
                       } on FirebaseAuthException catch (e) {
                         String errorMessage;
                         if (e.code == 'weak-password') {
@@ -215,7 +221,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       }
                     }
                   },
-                  borderColor: const Color(0xff182A3C),
+                  borderColor: const Color(0xffd26001).withOpacity(0.8),
                 ),
                 const SizedBox(
                   height: 32,

@@ -270,6 +270,11 @@ const loginRequiredText= Color(0xff274268);
 const saveButtonText= Color(0xff1762CB);
 const scaffoldBack= Color(0xff333739);
 const background= Color(0xffF5F7FA);
+const caffeColor = Color(0xffF8F4E1);
+const caffColor = Color(0xffAF8F6F);
+const cafColor = Color(0xff74512D);
+const caColor = Color(0xff543310);
+
 
 //const cloudBackground= Color(0xffF5F9FE);
 

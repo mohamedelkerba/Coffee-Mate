@@ -16,71 +16,62 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 40.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 70),
-               DefaultText(
-                text: 'Resume Builder',
-                 fontSize: 24,
-                  fontColor: Color(0xff203549),
-                  fontWeight: FontWeight.bold,
-                ),
-              const SizedBox(height: 20),
-              SvgPicture.asset(
-                'assets/images/login.svg',
-                fit: BoxFit.contain,
-                height: 200,
-              ),
-              const SizedBox(height: 70),
-              CustomButton(
-                height: 48,
-                width: 342,
-                title: 'Login',
-                onPress: () {
-                  Navigator.of(context).pushNamed('login');
-                },
-                borderColor: const Color(0xff182A3C),
-              ),
-              const SizedBox(height: 20),
-              CustomButton(
-                height: 48,
-                width: 342,
-                bgColor: Colors.white,
-                title: 'Register',
-                onPress: () {
-                  Navigator.of(context).pushNamed('register');
-                },
-                color: const Color(0xff203549),
-                borderColor: Colors.black, // Optional black border
-              ),
-              const SizedBox(height: 55),
-               MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  onTap: ()async {
-                    userCredential = await FirebaseAuth.instance.signInAnonymously();
-                     Navigator.of(context).pushNamedAndRemoveUntil('homepage', (route) => false);
-                  },
-                  child: DefaultText(
-                   text:   'Continue as a guest',
-                    fontSize: 16,
-                      fontColor: Color(0xff203549),
-                      fontWeight: FontWeight.bold,
-                      textDecoration: TextDecoration.underline,
-                    ),
-                ),
-                ),
-            ],
-          ),
+    return Stack(
+      children: [
+        Image.asset(
+          "assets/images/background.png",
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          fit: BoxFit.cover,
         ),
-      ),
+        Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 400),
+                CustomButton(
+                  height: 48,
+                  width: 342,
+                  title: 'Login',
+                  onPress: () {
+                    Navigator.of(context).pushNamed('login');
+                  },
+                  borderColor: const Color(0xffd26001).withOpacity(0.8),
+                ),
+                const SizedBox(height: 20),
+                CustomButton(
+                  height: 48,
+                  width: 342,
+                  bgColor: const Color(0xffd26001).withOpacity(0.1),
+                  title: 'Register',
+                  onPress: () {
+                    Navigator.of(context).pushNamed('register');
+                  },
+                  color: const Color(0xffd26001),
+                  borderColor: const Color(0xffd26001).withOpacity(0.8), // Optional black border
+                ),
+                const SizedBox(height: 55),
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: ()async {
+                      userCredential = await FirebaseAuth.instance.signInAnonymously();
+                      Navigator.of(context).pushNamedAndRemoveUntil('homepage', (route) => false);
+                    },
+                    child: DefaultText(
+                      text:   'Continue as guest',
+                      fontSize: 16,
+                      fontColor: const  Color(0xffd26001),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+      ],
     );
   }
 }
